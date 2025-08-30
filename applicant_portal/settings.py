@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'rest_framework',
     'app',
 ]
@@ -146,13 +147,11 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Recruitment API",
-    "DESCRIPTION": "Multi‑step recruitment form API",
+    "TITLE": "Applicant API",
+    "DESCRIPTION": "Multi‑step applicant form API",
     "VERSION": "1.0.0",
 }
-
 
 # SimpleJWT settings
 SIMPLE_JWT = {
@@ -160,6 +159,13 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 
+# Cloudinary (set via env vars)
+import os
+CLOUDINARY = {
+    'cloud_name': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'api_key': os.getenv('CLOUDINARY_API_KEY'),
+    'api_secret': os.getenv('CLOUDINARY_API_SECRET'),
+}
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

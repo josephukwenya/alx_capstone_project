@@ -22,20 +22,19 @@ class Applicant(models.Model):
   except Exception:
     qualifications = models.TextField(blank=True)
 
-
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
+  class Meta:
+    ordering = ["-created_at"]
 
-class Meta:
-  ordering = ["-created_at"]
+  def clean(self):
+    # Prevent updates when submitted (except by staff through admin or dedicated endpoint)
+    if self.pk and self.is_submitted and not getattr(self, "_allow_mutation", False):
+      raise ValidationError("Application is locked after submission.")
 
+  def can_edit(self, acting_user) -> bool:
+    return (acting_user.is_staff) or (acting_user == self.user and not self.is_submitted)
 
-def clean(self):
-  # Prevent updates when submitted (except by staff through admin or dedicated endpoint)
-  if self.pk and self.is_submitted and not getattr(self, "_allow_mutation", False):
-    raise ValidationError("Application is locked after submission.")
-
-
-def __str__(self):
-  return f"Applicant<{self.user.username}>"
+  def __str__(self):
+    return f"Applicant<{self.user.username}>"
