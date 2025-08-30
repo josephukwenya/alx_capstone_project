@@ -10,6 +10,15 @@ from .models import Applicant
 from .serializers import ApplicantSerializer, ApplicantUpdateSerializer
 from .permissions import IsOwnerOrAdmin
 
+from rest_framework import generics, permissions
+from .serializers import UserRegisterSerializer
+from django.contrib.auth.models import User
+
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
 class ApplicantViewSet(viewsets.ModelViewSet):
   queryset = Applicant.objects.select_related('user').all()
   permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
