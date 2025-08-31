@@ -169,10 +169,10 @@ CLOUDINARY = {
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 1025))
+EMAIL_HOST = os.getenv("EMAIL_HOST", "sandbox.smtp.mailtrap.io")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 2525))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "False") == "True"
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@example.com")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "2b6fab6eebc375")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "25b1433771b943")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@applicantportal.com")
 FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
