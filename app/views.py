@@ -45,24 +45,24 @@ class ApplicantViewSet(viewsets.ModelViewSet):
       return Response({'detail':'Already submitted.'}, status=status.HTTP_400_BAD_REQUEST)
 
     required = ['first_name','last_name','resume','profile_picture']
-    missing = [f for f in required if not getattr(app, f)]
+    missing = [f for f in required if not getattr(applicant, f)]
     if missing:
       return Response({'detail': f'Missing fields: {missing}'}, status=status.HTTP_400_BAD_REQUEST)
 
-      applicant.is_submitted = True
-      applicant.step = 99
-      applicant.save()
+    applicant.is_submitted = True
+    applicant.step = 99
+    applicant.save()
 
-      try:
-        send_mail(
-          subject='Application submitted',
-          message=f'Hi {applicant.first_name}, your application has been received.',
-          from_email=settings.DEFAULT_FROM_EMAIL,
-          recipient_list=[applicant.user.email],
-          fail_silently=False,
-      )
-        applicant.email_sent = True
-        applicant.save()
-      except Exception:
-        pass
-      return Response({'detail':'Submitted.'}, status=status.HTTP_200_OK)
+    try:
+      send_mail(
+        subject='Application submitted',
+        message=f'Hi {applicant.first_name}, your application has been received.',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[applicant.user.email],
+        fail_silently=False,
+    )
+      applicant.email_sent = True
+      applicant.save()
+    except Exception:
+      pass
+    return Response({'detail':'Submitted.'}, status=status.HTTP_200_OK)
