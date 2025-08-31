@@ -17,40 +17,34 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+
 class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ["id", "username", "email", "is_staff", "is_superuser"]
-    read_only_fields = ["id", "is_staff", "is_superuser"]
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "is_staff", "is_superuser"]
+        read_only_fields = ["id", "is_staff", "is_superuser"]
+
 
 class ApplicantSerializer(serializers.ModelSerializer):
-  user = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
 
-  # class Meta:
-  #   model = Applicant
-  #   fields = [
-  #     "id", "user", "step", "is_submitted", "email_sent",
-  #     "first_name", "last_name", "phone", "address",
-  #     "profile_picture", "resume", "qualifications",
-  #     "created_at", "updated_at",
-  #     ]
-  
-  class Meta:
-    model = Applicant
-    fields = "__all__",
-    read_only_fields = ["id", "user", "created_at", "updated_at",]
-  
-  def to_representation(self, instance):
-    """Return Cloudinary URLs instead of file objects"""
-    rep = super().to_representation(instance)
-    if instance.profile_picture:
-        rep["profile_picture"] = instance.profile_picture.url
-    if instance.resume:
-        rep["resume"] = instance.resume.url
-    return rep
+    class Meta:
+        model = Applicant
+        fields = "__all__"
+        read_only_fields = ["user", "is_submitted", "email_sent", "step"]
+
+    def to_representation(self, instance):
+        """Return Cloudinary URLs instead of file objects"""
+        rep = super().to_representation(instance)
+        if instance.profile_picture:
+            rep["profile_picture"] = instance.profile_picture.url
+        if instance.resume:
+            rep["resume"] = instance.resume.url
+        return rep
+
 
 class ApplicantUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
-        # Allow only specific fields to be updated
-        fields = ["first_name", "last_name", "email", "phone_number"]
+        # Only allow controlled updates
+        fields = ["first_name", "last_name", "phone", "address", "profile_picture", "resume", "qualifications"]
