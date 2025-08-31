@@ -1,9 +1,14 @@
 from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
+from cloudinary.models import CloudinaryField
 
 class Applicant(models.Model):
-  user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="applicant")
+  user = models.OneToOneField(
+    settings.AUTH_USER_MODEL, 
+    on_delete=models.CASCADE, 
+    related_name="applicant"
+  )
   step = models.PositiveIntegerField(default=1)
   is_submitted = models.BooleanField(default=False)
   email_sent = models.BooleanField(default=False)
@@ -13,8 +18,13 @@ class Applicant(models.Model):
   phone = models.CharField(max_length=20, blank=True)
   address = models.TextField(blank=True)
 
-  profile_picture = models.URLField(blank=True)
-  resume = models.URLField(blank=True) 
+  # Uploads automatically to Cloudinary
+  profile_picture = CloudinaryField(
+      "profile_picture", folder="applicants/profile_pictures", blank=True, null=True
+  )
+  resume = CloudinaryField(
+      "resume", folder="applicants/resumes", blank=True, null=True
+  )
 
   try:
     from django.db.models import JSONField as BuiltinJSONField

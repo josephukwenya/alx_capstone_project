@@ -26,14 +26,28 @@ class UserSerializer(serializers.ModelSerializer):
 class ApplicantSerializer(serializers.ModelSerializer):
   user = UserSerializer(read_only=True)
 
+  # class Meta:
+  #   model = Applicant
+  #   fields = [
+  #     "id", "user", "step", "is_submitted", "email_sent",
+  #     "first_name", "last_name", "phone", "address",
+  #     "profile_picture", "resume", "qualifications",
+  #     "created_at", "updated_at",
+  #     ]
+  
   class Meta:
     model = Applicant
-    fields = [
-      "id", "user", "step", "is_submitted", "email_sent",
-      "first_name", "last_name", "phone", "address",
-      "profile_picture", "resume", "qualifications",
-      "created_at", "updated_at",
-      ]
+    fields = "__all__",
+    read_only_fields = ["id", "user", "created_at", "updated_at",]
+  
+  def to_representation(self, instance):
+    """Return Cloudinary URLs instead of file objects"""
+    rep = super().to_representation(instance)
+    if instance.profile_picture:
+        rep["profile_picture"] = instance.profile_picture.url
+    if instance.resume:
+        rep["resume"] = instance.resume.url
+    return rep
 
 class ApplicantUpdateSerializer(serializers.ModelSerializer):
     class Meta:
