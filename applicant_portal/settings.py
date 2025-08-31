@@ -93,9 +93,9 @@ WSGI_APPLICATION = 'applicant_portal.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "capstone_project",
-        "USER": "postgres",
-        "PASSWORD": "test",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASS"),
         "HOST": "localhost",
         "PORT": "5432",
     }
