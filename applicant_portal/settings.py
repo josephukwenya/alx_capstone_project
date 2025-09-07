@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 import environ
+import dj_database_url
 # from dotenv import load_dotenv
 
 # Environment variable
@@ -38,8 +39,8 @@ SECRET_KEY = 'django-insecure-g+ll*h0dkdl8xn2o8z2r8wt%ovi09*i=gs67r8^#6-(j8rxobj
 # ALLOWED_HOSTS = []
 
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if os.getenv("DJANGO_ALLOWED_HOSTS") else ["*"]
-
+# ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if os.getenv("DJANGO_ALLOWED_HOSTS") else ["*"]
+ALLOWED_HOSTS = ["your-service-name.onrender.com"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -90,16 +91,32 @@ WSGI_APPLICATION = 'applicant_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASS"),
-        "HOST": "localhost",
-        "PORT": "5432",
+# DATABASES = {
+#     'default': {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": env("DB_NAME"),
+#         "USER": env("DB_USER"),
+#         "PASSWORD": env("DB_PASS"),
+#         "HOST": env("DB_HOST", default="localhost"),
+#         "PORT": "5432",
+#     }
+# }
+
+if env("DATABASE_URL", default=None):  # Use DATABASE_URL if present (Render)
+    DATABASES = {
+        "default": dj_database_url.parse(env("DATABASE_URL"), conn_max_age=600)
     }
-}
+else:  # Fallback to local settings
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DB_NAME"),
+            "USER": env("DB_USER"),
+            "PASSWORD": env("DB_PASS"),
+            "HOST": env("DB_HOST", default="localhost"),
+            "PORT": "5432",
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -118,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
